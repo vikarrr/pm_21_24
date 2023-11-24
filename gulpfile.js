@@ -25,8 +25,8 @@ exports.html = task_html
 
 //об'єднання, компіляція Sass в CSS, додавання префіксів і подальша мінімалізація коду
 function task_sass() {
-  return src("app/sass/*.sass")
-  .pipe(concat('styles.sass'))
+  return src("app/scss/*.scss")
+  .pipe(concat('styles.scss'))
   .pipe(sass())
   .pipe(autoprefixer ({
     cascade: false
@@ -57,33 +57,26 @@ function task_imgs() {
   }))
   .pipe(dest("dist/images"))
 }
+
+const lib_css_task = () => src('app/css/bootstrap.min.css')
+  .pipe(dest('dist/css'));
+
+const lib_js_task = () => src('app/js/bootstrap.min.js')
+  .pipe(dest('dist/js'));
+
 exports.imgs = task_imgs
 
 //відстежування за змінами у файлах
 function task_watch() {
   watch("app/html/*.html",task_html);
   watch("app/js/*.js",task_scripts);
-  watch("app/sass/*.sass",task_sass);
+  watch("app/scss/*.scss",task_sass);
   watch("app/images/*.+(jpg|jpeg|png|gif)",task_imgs);
 }
 exports.watch = task_watch
 
+
 //запуск тасків за замовчуванням
-//exports.build = build;
-exports.default = series(task_html,task_sass,task_scripts,task_imgs,task_watch); // GULPFILE
 
-// // const gulp = require('gulp');
+exports.default = series(task_html,task_sass,task_scripts,lib_css_task,lib_js_task,task_imgs,task_watch); // GULPFILE
 
-
-// // gulp.task('html', () => {
-// //     return gulp.src('app/*.html')
-// //     .pipe(gulp.dest('dist'))
-// // });
-
-
-
-// // gulp.task('watch', () => {
-// //     gulp.watch('app/*.html', gulp.parallel('html'));
-// // })
-
-// // gulp.task('default', gulp.series('html', 'scss', 'watch'));
